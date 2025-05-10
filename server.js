@@ -22,7 +22,6 @@ app.post("/contact", async (req, res) => {
   console.log("📥 Contact form submitted:", { name, email, message });
 
   try {
-    // ✅ 1. Verify reCAPTCHA token with Google
     const verifyURL = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET}&response=${token}`;
     const captchaRes = await axios.post(verifyURL);
     const success = captchaRes.data.success;
@@ -31,12 +30,10 @@ app.post("/contact", async (req, res) => {
       return res.status(403).json({ message: "Failed reCAPTCHA verification." });
     }
 
-    // ✅ 2. Check Gmail credentials
     if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
       throw new Error("Missing Gmail credentials in .env file");
     }
 
-    // ✅ 3. Send email
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -59,6 +56,49 @@ app.post("/contact", async (req, res) => {
   } catch (err) {
     console.error("❌ Error sending email:", err.message);
     res.status(500).json({ message: "Failed to send email" });
+  }
+});
+
+app.post("/booking", async (req, res) => {
+  const { name, email, service, preferred_date, location, details, token } = req.body;
+
+  if (!name || !email || !service || !preferred_date || !token) {
+    return res.status(400).json({ message: "Required fields and reCAPTCHA are missing." });
+  }
+
+  console.log("📅 Booking request submitted:", { name, email, service, preferred_date });
+
+  try {
+    const verifyURL = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET}&response=${token}`;
+    const captchaRes = await axios.post(verifyURL);
+    const success = captchaRes.data.success;
+
+    if (!success) {
+      return res.status(403).json({ message: "Failed reCAPTCHA verification." });
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS
+      }
+    });
+
+    const mailOptions = {
+      from: email,
+      to: process.env.GMAIL_USER,
+      subject: `Fortis Booking - ${service} Request from ${name}`,
+      text: `Service: ${service}\nDate: ${preferred_date}\nLocation: ${location}\nDetails: ${details}\nFrom: ${name} <${email}>`
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log("✅ Booking email sent!");
+    res.status(200).json({ message: "Booking request sent successfully" });
+
+  } catch (err) {
+    console.error("❌ Error sending booking email:", err.message);
+    res.status(500).json({ message: "Failed to send booking request" });
   }
 });
 
