@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Book a cleaning service with Fortis Cleaning Services">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Cleaning | Fortis Cleaning Services</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>Fortis Cleaning – Book Now</h1>
+      <nav>
+        <a href="Index.htm">← Back to Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="booking-form">
+    <div class="container">
+      <h2>Request a Quote or Booking</h2>
+      <form id="booking-form">
+        <input type="text" id="book-name" placeholder="Your Name" required>
+        <input type="email" id="book-email" placeholder="Your Email" required>
+        <select id="service" required>
+          <option value="">Select a service</option>
+          <option value="Window Cleaning">Window Cleaning</option>
+          <option value="Office Cleaning">Office Cleaning</option>
+          <option value="Home Cleaning">Home Cleaning</option>
+          <option value="Custom Request">Custom Request</option>
+        </select>
+        <input type="date" id="date" required>
+        <input type="text" id="location" placeholder="Your Location">
+        <textarea id="details" rows="4" placeholder="Describe your needs..."></textarea>
+        <div class="g-recaptcha" data-sitekey="6Lf66jQrAAAAAB6MNO2pigNxYtMHcyYr33qr15MM"></div>
+        <button type="submit" class="submit-btn">Submit Request</button>
+        <div id="bookingMessage" style="display:none;"></div>
+      </form>
+    </div>
+  </section>
+
+  <script src="booking.js"></script>
+</body>
+</html>
