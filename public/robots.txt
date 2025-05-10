@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fortis-cleaning.onrender.com/sitemap.xml
